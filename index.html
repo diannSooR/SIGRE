@@ -678,7 +678,7 @@
 
   const layerConfigs = {
     cluster:   { title:'Cluster de riesgo', items:[{c:'#e74c3c',l:'Alto'},{c:'#e67e22',l:'Medio-Alto'},{c:'#f39c12',l:'Medio'},{c:'#f1c40f',l:'Bajo-Medio'},{c:'#2ecc71',l:'Bajo'},{c:'rgba(255,255,255,0.12)',l:'Sin datos'}] },
-    sismo:     { title:'Riesgo sísmico',    items:[{c:'#e74c3c',l:'Muy Alto (5)'},{c:'#e67e22',l:'Alto (4)'},{c:'#f39c12',l:'Medio (3)'},{c:'#2ecc71',l:'Bajo (0-2)'},{c:'rgba(255,255,255,0.12)',l:'Sin datos'}] },
+    sismo:     { title:'Riesgo sísmico',    items:[{c:'#791F1F',l:'Muy alto (5)'},{c:'#854F0B',l:'Alto (4)'},{c:'#185FA5',l:'Medio (3)'},{c:'#3B6D11',l:'Bajo (1-2)'},{c:'rgba(255,255,255,0.12)',l:'Sin datos'}] },
     inundacion:{ title:'Riesgo inundación', items:[{c:'#e74c3c',l:'Muy Alto (5)'},{c:'#e67e22',l:'Alto (4)'},{c:'#2980b9',l:'Medio (3)'},{c:'#27ae60',l:'Bajo (2)'},{c:'#82e0aa',l:'Muy Bajo (1)'},{c:'rgba(255,255,255,0.12)',l:'Sin datos'}] },
     imu:       { title:'Marginación (IMU)', items:[{c:'#791F1F',l:'Alta marginación'},{c:'#185FA5',l:'Media'},{c:'#3B6D11',l:'Baja marginación'},{c:'rgba(255,255,255,0.12)',l:'Sin datos'}] },
   };
@@ -751,20 +751,24 @@
 
         // Título y color del popup según capa activa
         let popupLabel, popupColor;
-// NUEVO CÓDIGO:
-    if (currentLayer === 'sismo') {
-      const v = p.riesgo_sismo;
-      
-      // 1. Validar primero si no hay datos
-      if (v == null || v === '') {
-        popupLabel = 'Sin datos';
-        popupColor = 'rgba(255,255,255,0.12)';
-      } else {
-        // 2. Si hay datos, calcular el color y la etiqueta correctamente
-        popupLabel = p.riesgo_sismo_label ?? (v >= 5 ? 'Muy Alto' : v >= 4 ? 'Alto' : v >= 3 ? 'Medio' : 'Bajo');
-        popupColor = v >= 5 ? '#e74c3c' : v >= 4 ? '#e67e22' : v >= 3 ? '#f39c12' : '#2ecc71';
-      }
-    } 
+        if (currentLayer === 'sismo') {
+          const v = p.riesgo_sismo;
+          const rawLabel = p.riesgo_sismo_label;
+          popupLabel = (rawLabel && rawLabel !== 'Sin dato') ? rawLabel : (v != null ? 'Bajo' : '—');
+          popupColor = v >= 5 ? '#e74c3c' : v >= 4 ? '#e67e22' : v >= 3 ? '#f39c12' : '#2ecc71';
+        } else if (currentLayer === 'inundacion') {
+          popupLabel = p.riesgo_inundacion_label ?? '—';
+          const v = p.riesgo_inundacion;
+          popupColor = v >= 5 ? '#e74c3c' : v >= 4 ? '#e67e22' : v >= 3 ? '#2980b9' : v >= 2 ? '#27ae60' : '#82e0aa';
+        } else if (currentLayer === 'imu') {
+          popupLabel = p.imu_2020 != null ? Number(p.imu_2020).toFixed(3) : '—';
+          const v = p.imu_2020;
+          popupColor = v < -1 ? '#e74c3c' : v < 0 ? '#f39c12' : '#2ecc71';
+        } else {
+          popupLabel = rgeneral;
+          popupColor = irc >= 0.693 ? '#e74c3c' : irc >= 0.653 ? '#e67e22' : irc >= 0.537 ? '#f39c12' : irc >= 0.337 ? '#f1c40f' : '#2ecc71';
+        }
+
         layer.bindPopup(`
           <div class="popup-cluster">AGEB · ${cvegeo}</div>
           <div class="popup-title">Riesgo: <span style="color:${popupColor};font-family:'DM Mono',monospace">${popupLabel}</span></div>
