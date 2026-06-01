@@ -679,7 +679,7 @@
   const layerConfigs = {
     cluster:   { title:'Cluster de riesgo', items:[{c:'#e74c3c',l:'Alto'},{c:'#e67e22',l:'Medio-Alto'},{c:'#f39c12',l:'Medio'},{c:'#f1c40f',l:'Bajo-Medio'},{c:'#2ecc71',l:'Bajo'},{c:'rgba(255,255,255,0.12)',l:'Sin datos'}] },
     sismo:     { title:'Riesgo sísmico',    items:[{c:'#e74c3c',l:'Muy Alto (5)'},{c:'#e67e22',l:'Alto (4)'},{c:'#f39c12',l:'Medio (3)'},{c:'#2ecc71',l:'Bajo (0-2)'},{c:'rgba(255,255,255,0.12)',l:'Sin datos'}] },
-    inundacion:{ title:'Riesgo inundación', items:[{c:'#e74c3c',l:'Muy Alto (5)'},{c:'#e67e22',l:'Alto (4)'},{c:'#2980b9',l:'Medio (3)'},{c:'#27ae60',l:'Bajo (2)'},{c:'#2ecc71',l:'Muy Bajo (1)'},{c:'rgba(255,255,255,0.12)',l:'Sin datos'}] },
+    inundacion:{ title:'Riesgo inundación', items:[{c:'#e74c3c',l:'Muy Alto (5)'},{c:'#e67e22',l:'Alto (4)'},{c:'#f39c12',l:'Medio (3)'},{c:'#2980b9',l:'Bajo (2)'},{c:'#2ecc71',l:'Muy Bajo (1)'},{c:'rgba(255,255,255,0.12)',l:'Sin datos'}] },
     imu:       { title:'Marginación (IMU)', items:[{c:'#791F1F',l:'Alta marginación'},{c:'#185FA5',l:'Media'},{c:'#3B6D11',l:'Baja marginación'},{c:'rgba(255,255,255,0.12)',l:'Sin datos'}] },
   };
 
@@ -714,9 +714,9 @@
       if (v == null) return 'rgba(255,255,255,0.1)';
       if (v >= 5) return '#e74c3c';   // Muy Alto
       if (v >= 4) return '#e67e22';   // Alto
-      if (v >= 3) return '#2980b9';   // Medio — azul
-      if (v >= 2) return '#27ae60';   // Bajo — verde medio
-      return '#2ecc71';               // Muy Bajo — verde claro
+      if (v >= 3) return '#f39c12';   // Medio
+      if (v >= 2) return '#2980b9';   // Bajo
+      return '#2ecc71';               // Muy Bajo
     }
     if (currentLayer === 'imu') return scaleColor(props.imu_2020, -2, 2, imuScale);
     return '#333';
