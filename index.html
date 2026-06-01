@@ -748,15 +748,32 @@
         const suelo   = p.tipo_suelo_label ?? (p.tipo_suelo != null ? `Tipo ${p.tipo_suelo}` : '—');
         const laderas = p.riesgo_laderas != null ? Number(p.riesgo_laderas).toFixed(1)+' / 5' : '—';
         const rgeneral = p.riesgo_general_label ?? '—';
-        const cLabel  = clusterInt !== null ? clusterLabel(clusterInt) : rgeneral;
         const irc = p.indice_riesgo_compuesto;
-        const pillColor = clusterInt !== null
-          ? (clusterInt===3?'#e74c3c':clusterInt===2?'#e67e22':clusterInt===1?'#f1c40f':'#2ecc71')
-          : (irc >= 0.693 ? '#e74c3c' : irc >= 0.653 ? '#e67e22' : irc >= 0.537 ? '#f39c12' : irc >= 0.337 ? '#f1c40f' : '#2ecc71');
+
+        // Label y color del título según capa activa
+        let popupLabel, popupColor;
+        if (currentLayer === 'sismo') {
+          popupLabel = p.riesgo_sismo_label ?? '—';
+          const v = p.riesgo_sismo;
+          popupColor = v >= 5 ? '#e74c3c' : v >= 4 ? '#e67e22' : v >= 3 ? '#f39c12' : '#2ecc71';
+        } else if (currentLayer === 'inundacion') {
+          popupLabel = p.riesgo_inundacion_label ?? '—';
+          const v = p.riesgo_inundacion ?? p.severidad_inundacion;
+          popupColor = v >= 5 ? '#e74c3c' : v >= 4 ? '#e67e22' : v >= 3 ? '#f39c12' : v >= 2 ? '#2980b9' : '#2ecc71';
+        } else if (currentLayer === 'imu') {
+          popupLabel = p.imu_2020 != null ? Number(p.imu_2020).toFixed(3) : '—';
+          const v = p.imu_2020;
+          popupColor = v < -1 ? '#e74c3c' : v < 0 ? '#f39c12' : '#2ecc71';
+        } else {
+          popupLabel = rgeneral;
+          popupColor = clusterInt !== null
+            ? (clusterInt===3?'#e74c3c':clusterInt===2?'#e67e22':clusterInt===1?'#f1c40f':'#2ecc71')
+            : (irc >= 0.693 ? '#e74c3c' : irc >= 0.653 ? '#e67e22' : irc >= 0.537 ? '#f39c12' : irc >= 0.337 ? '#f1c40f' : '#2ecc71');
+        }
 
         layer.bindPopup(`
           <div class="popup-cluster">AGEB · ${cvegeo}</div>
-          <div class="popup-title">Riesgo: <span style="color:${pillColor};font-family:'DM Mono',monospace">${rgeneral}</span></div>
+          <div class="popup-title">Riesgo: <span style="color:${popupColor};font-family:'DM Mono',monospace">${popupLabel}</span></div>
           <div class="popup-row"><span>Riesgo sísmico</span><span class="popup-val">${sismo}</span></div>
           <div class="popup-row"><span>Riesgo inundación</span><span class="popup-val">${inund}</span></div>
           <div class="popup-row"><span>Riesgo laderas</span><span class="popup-val">${laderas}</span></div>
