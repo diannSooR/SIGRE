@@ -751,23 +751,20 @@
 
         // Título y color del popup según capa activa
         let popupLabel, popupColor;
-        if (currentLayer === 'sismo') {
-          popupLabel = p.riesgo_sismo_label ?? '—';
-          const v = p.riesgo_sismo;
-          popupColor = v >= 5 ? '#e74c3c' : v >= 4 ? '#e67e22' : v >= 3 ? '#f39c12' : '#2ecc71';
-        } else if (currentLayer === 'inundacion') {
-          popupLabel = p.riesgo_inundacion_label ?? '—';
-          const v = p.riesgo_inundacion;
-          popupColor = v >= 5 ? '#e74c3c' : v >= 4 ? '#e67e22' : v >= 3 ? '#2980b9' : v >= 2 ? '#27ae60' : '#82e0aa';
-        } else if (currentLayer === 'imu') {
-          popupLabel = p.imu_2020 != null ? Number(p.imu_2020).toFixed(3) : '—';
-          const v = p.imu_2020;
-          popupColor = v < -1 ? '#e74c3c' : v < 0 ? '#f39c12' : '#2ecc71';
-        } else {
-          popupLabel = rgeneral;
-          popupColor = irc >= 0.693 ? '#e74c3c' : irc >= 0.653 ? '#e67e22' : irc >= 0.537 ? '#f39c12' : irc >= 0.337 ? '#f1c40f' : '#2ecc71';
-        }
-
+// NUEVO CÓDIGO:
+    if (currentLayer === 'sismo') {
+      const v = p.riesgo_sismo;
+      
+      // 1. Validar primero si no hay datos
+      if (v == null || v === '') {
+        popupLabel = 'Sin datos';
+        popupColor = 'rgba(255,255,255,0.12)';
+      } else {
+        // 2. Si hay datos, calcular el color y la etiqueta correctamente
+        popupLabel = p.riesgo_sismo_label ?? (v >= 5 ? 'Muy Alto' : v >= 4 ? 'Alto' : v >= 3 ? 'Medio' : 'Bajo');
+        popupColor = v >= 5 ? '#e74c3c' : v >= 4 ? '#e67e22' : v >= 3 ? '#f39c12' : '#2ecc71';
+      }
+    } 
         layer.bindPopup(`
           <div class="popup-cluster">AGEB · ${cvegeo}</div>
           <div class="popup-title">Riesgo: <span style="color:${popupColor};font-family:'DM Mono',monospace">${popupLabel}</span></div>
