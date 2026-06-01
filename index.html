@@ -732,9 +732,12 @@
         const pob     = p.pob_total != null ? Number(p.pob_total).toLocaleString('es-MX') : '—';
         const suelo   = p.tipo_suelo_label ?? (p.tipo_suelo != null ? `Tipo ${p.tipo_suelo}` : '—');
         const laderas = p.riesgo_laderas != null ? Number(p.riesgo_laderas).toFixed(1)+' / 5' : '—';
-        const rgeneral = p.riesgo_general_label ?? (p.riesgo_general != null ? Number(p.riesgo_general).toFixed(2) : '—');
-        const cLabel  = clusterInt !== null ? clusterLabel(clusterInt) : (p.riesgo_general_label ?? '—');
-        const pillColor = clusterInt===3?'#e74c3c':clusterInt===2?'#e67e22':clusterInt===1?'#f1c40f':'#2ecc71';
+        const rgeneral = p.riesgo_general_label ?? '—';
+        const cLabel  = clusterInt !== null ? clusterLabel(clusterInt) : rgeneral;
+        const irc = p.indice_riesgo_compuesto;
+        const pillColor = clusterInt !== null
+          ? (clusterInt===3?'#e74c3c':clusterInt===2?'#e67e22':clusterInt===1?'#f1c40f':'#2ecc71')
+          : (irc >= 0.693 ? '#e74c3c' : irc >= 0.653 ? '#e67e22' : irc >= 0.537 ? '#f39c12' : irc >= 0.337 ? '#f1c40f' : '#2ecc71');
 
         layer.bindPopup(`
           <div class="popup-cluster">AGEB · ${cvegeo}</div>
