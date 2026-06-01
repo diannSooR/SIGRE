@@ -201,6 +201,7 @@
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('overview',this)"><i class="ti ti-dashboard"></i>Vista general</button>
     <button class="tab-btn" onclick="switchTab('mapa',this)"><i class="ti ti-map"></i>Mapa interactivo</button>
+    <button class="tab-btn" onclick="switchTab('salidas',this)"><i class="ti ti-chart-bar"></i>Salidas del análisis</button>
     <button class="tab-btn" onclick="switchTab('modelo',this)"><i class="ti ti-brain"></i>Modelo predictivo</button>
   </div>
 
@@ -460,7 +461,95 @@
 
   </div><!-- /tab-mapa -->
 
-  <!-- ══════════ TAB: MODELO ══════════ -->
+  <!-- ══════════ TAB: SALIDAS DEL ANÁLISIS ══════════ -->
+  <div id="tab-salidas" class="tab-panel">
+
+    <div class="section-label">Salidas del análisis</div>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:20px;line-height:1.6;">
+      Visualizaciones generadas por el pipeline de análisis sobre las 2,453 AGEBs de la CDMX. Cada gráfica representa una salida clave del proceso de modelado y exploración de datos.
+    </p>
+
+    <!-- FILA 1: Correlación + Perfil de clusters -->
+    <div class="two-col" style="margin-bottom:12px;">
+      <div class="card" style="padding:0;overflow:hidden;">
+        <div style="padding:14px 16px 10px;border-bottom:0.5px solid var(--border);">
+          <div class="card-title" style="margin-bottom:0;"><i class="ti ti-chart-dots"></i> Correlación entre variables de riesgo</div>
+        </div>
+        <img src="output/charts/correlacion_riesgos_v3.png"
+          alt="Matriz de correlación entre variables de riesgo por AGEB"
+          style="width:100%;display:block;" loading="lazy" />
+        <div style="padding:10px 16px 14px;font-size:12px;color:var(--text2);line-height:1.6;">
+          Matriz de correlación de Pearson entre las variables de riesgo. Destaca la correlación fuerte entre riesgo sísmico e inundación <strong style="color:var(--text)">(r = 0.84)</strong>, explicada principalmente por el tipo de suelo lacustre compartido.
+        </div>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden;">
+        <div style="padding:14px 16px 10px;border-bottom:0.5px solid var(--border);">
+          <div class="card-title" style="margin-bottom:0;"><i class="ti ti-circles"></i> Perfil de los 4 clusters de riesgo</div>
+        </div>
+        <img src="output/charts/perfil_clusters_v3.png"
+          alt="Perfil de los 4 clusters de riesgo K-Means sobre el dataset v3"
+          style="width:100%;display:block;" loading="lazy" />
+        <div style="padding:10px 16px 14px;font-size:12px;color:var(--text2);line-height:1.6;">
+          Perfil de cada cluster según sus variables promedio. El cluster Alto (rojo) concentra suelo tipo III, sismo 4-5/5 e inundación alta. El cluster Bajo (verde) predomina en sur y poniente con suelo de roca.
+        </div>
+      </div>
+    </div>
+
+    <!-- FILA 2: Elbow + Distribuciones v2 vs v3 -->
+    <div class="two-col" style="margin-bottom:12px;">
+      <div class="card" style="padding:0;overflow:hidden;">
+        <div style="padding:14px 16px 10px;border-bottom:0.5px solid var(--border);">
+          <div class="card-title" style="margin-bottom:0;"><i class="ti ti-trending-down"></i> Selección de k óptimo — Elbow + Silhouette</div>
+        </div>
+        <img src="output/charts/elbow_silhouette_comparativo.png"
+          alt="Método del codo y Silhouette Score para selección de k óptimo en K-Means"
+          style="width:100%;display:block;" loading="lazy" />
+        <div style="padding:10px 16px 14px;font-size:12px;color:var(--text2);line-height:1.6;">
+          Evaluación de k=2 a k=10 mediante el método del codo (inercia) y Silhouette Score. Se seleccionó <strong style="color:var(--text)">k=4</strong> como óptimo por su balance entre calidad de clustering (Silhouette: 0.74) y simplicidad interpretativa.
+        </div>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden;">
+        <div style="padding:14px 16px 10px;border-bottom:0.5px solid var(--border);">
+          <div class="card-title" style="margin-bottom:0;"><i class="ti ti-chart-histogram"></i> Distribuciones de riesgo — v2 vs v3</div>
+        </div>
+        <img src="output/charts/distribuciones_riesgo_v2_v3.png"
+          alt="Comparativa de distribuciones de riesgo entre dataset v2 y v3"
+          style="width:100%;display:block;" loading="lazy" />
+        <div style="padding:10px 16px 14px;font-size:12px;color:var(--text2);line-height:1.6;">
+          Comparativa de distribuciones entre v2 y v3. La limpieza de datos restauró la variabilidad en variables que estaban aplanadas en v2, mejorando el Silhouette Score de <strong style="color:var(--text)">0.66 → 0.74</strong> y el Davies-Bouldin de 0.58 → 0.37.
+        </div>
+      </div>
+    </div>
+
+    <!-- FILA 3: Riesgo por tipo de suelo + Mapa comparativo clusters -->
+    <div class="two-col" style="margin-bottom:12px;">
+      <div class="card" style="padding:0;overflow:hidden;">
+        <div style="padding:14px 16px 10px;border-bottom:0.5px solid var(--border);">
+          <div class="card-title" style="margin-bottom:0;"><i class="ti ti-layers"></i> Riesgo compuesto por tipo de suelo</div>
+        </div>
+        <img src="output/charts/riesgo_por_tipo_suelo.png"
+          alt="Distribución del índice de riesgo compuesto por tipo de suelo geotécnico"
+          style="width:100%;display:block;" loading="lazy" />
+        <div style="padding:10px 16px 14px;font-size:12px;color:var(--text2);line-height:1.6;">
+          Distribución del índice de riesgo compuesto según el tipo de suelo geotécnico. El suelo <strong style="color:var(--text)">Arenoso (Zona III)</strong> presenta una mediana de índice 38% mayor que el suelo Roca (Zona I), confirmando la amplificación sísmica del suelo lacustre.
+        </div>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden;">
+        <div style="padding:14px 16px 10px;border-bottom:0.5px solid var(--border);">
+          <div class="card-title" style="margin-bottom:0;"><i class="ti ti-versions"></i> Evolución del clustering — v1, v2 y v3</div>
+        </div>
+        <img src="output/maps/mapa_comparativo_clusters.png"
+          alt="Comparativa de mapas de clustering K-Means entre versiones v1, v2 y v3"
+          style="width:100%;display:block;" loading="lazy" />
+        <div style="padding:10px 16px 14px;font-size:12px;color:var(--text2);line-height:1.6;">
+          Comparativa del mapa de clusters entre las tres versiones del dataset. Muestra cómo el proceso de limpieza y enriquecimiento de datos (v1 → v2 → v3) mejoró progresivamente la definición territorial de las zonas de riesgo.
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /tab-salidas -->
+
+  <!-- ══════════ TAB: MODELO PREDICTIVO ══════════ -->
   <div id="tab-modelo" class="tab-panel">
 
     <div class="section-label">Desempeño del modelo predictivo</div>
